@@ -1,0 +1,4 @@
+.navbar .container-fluid .navbar-brand{text-align: center;width: 100%;font: normal bold 20px/30px serif;}
+.input-group .form2{height: 200px;background: url(../images/messagebg.gif) no-repeat right bottom;}
+.btn-success{width: 100%;}
+#alertmsg1,#alertmsg0{text-align: center;display: none;}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/layout.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+            <p class="navbar-brand" href="/">Coder的留言墙</p>
+    </div>
+</nav>
+
+<div class="container">
+    <form id="myForm">
+    <div class="input-group input-group-lg">
+        <span class="input-group-addon" id="sizing-addon1">昵称</span>
+        <input type="text" class="form-control" placeholder="怎么称呼您呢" aria-describedby="sizing-addon1" name="name" id="name" autofocus>
+    </div>
+    <br/>
+    <div class="input-group input-group-lg message">
+        <span class="input-group-addon" id="sizing-addon1">留言</span>
+        <textarea name="mesages" id="messages" class="form-control form2" placeholder="期待您的留言"></textarea>
+    </div><br/>
+    <div class="alert alert-success" role="alert" id="alertmsg1"><b>留言成功！</b>非常感谢您的留言！</div>
+    <div class="alert alert-danger alert-dismissible" role="alert" id="alertmsg0">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        <strong>留言失败!</strong> 请检查您的昵称和留言内容是否正确！
+    </div>
+    <input type="button" class="btn btn-success" id="submit"  value="提交">
+    </form>
+</div><br>
+
+<div class="container">
+    <!--messages pages-->
+    <ul class="pagination">
+        <li class="disabled">
+      <span>
+        <span aria-hidden="true">&laquo;</span>
+      </span>
+        </li>
+        <li class="active">
+            <span>1 <span class="sr-only">(current)</span></span>
+        </li>
+    </ul>
+    <!--messages content-->
+    <ul class="list-group">
+        <% for(let i = 0;i< message.length;i++){ %>
+        <li class="list-group-item">昵称：<%= message[i].name %><br> 留言：<%= message[i].content %><br> 时间：<%= message[i].time %></li>
+        <% } %>
+    </ul>
+
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+
+        // ajac submit data
+        $('#submit').on('click',function () {
+        //check user input correct
+        if ($('#messages').val()=='' || $('#name').val() == '') {
+            $('#alertmsg0').css('display', 'block');
+        }else {
+            $.post('/submit', $('#myForm').serialize(), function (data) {
+                if (data.msg == 1) {
+                    $('#alertmsg1').css('display', 'block').fadeIn('slow', function () {
+                        $(this).delay(1000).fadeOut();
+                    });
+                    $('.form-control').val('');
+                    $('.list-group').prepend("<li class='list-group-item'>昵称：" + data.fields.name + "<br>留言：" + data.fields.mesages + "<br>时间：" + new Date().toLocaleString()  +"</li>");
+                } else if (data.msg == -1) {
+                    $('#alertmsg0').css('display', 'block');
+                } else {
+                    alert('未知错误！');
+                }
+            });
+        }
+        });
+    });
+</script>
+</body>
+</html>
